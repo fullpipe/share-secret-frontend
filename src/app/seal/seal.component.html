@@ -80,16 +80,15 @@
     <hr />
     <div class="row">
         <div class="col-12 mb-3">
-            <h2>Now distribute shares between keepers:</h2>
+            <h2>Now spread shares between keepers</h2>
         </div>
 
         <div class="col-sm-6 mb-3" *ngFor="let share of shares; let i = index">
             <div class="card" [class.text-muted]="share.copied">
                 <div class="card-body">
                     <h5 class="card-title">
-                        Share #{{ i }} <span *ngIf="share.copied" class="badge bg-success">copied</span>
+                        Share #{{ i + 1 }} <span *ngIf="share.copied" class="badge bg-success">copied</span>
                     </h5>
-                    <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
                     <p class="card-text">{{ share.hash }}</p>
                     <a (click)="copy(i)" class="card-link">Copy</a>
                     <a (click)="copyMarkdown(i)" class="card-link">Copy as markdown</a>
