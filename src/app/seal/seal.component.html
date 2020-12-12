@@ -1,0 +1,103 @@
+<div class="display-1 text-center">
+    <svg
+        width="1em"
+        height="1em"
+        viewBox="0 0 16 16"
+        class="bi bi-lock"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            fill-rule="evenodd"
+            d="M11.5 8h-7a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1zm-7-1a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7zm0-3a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"
+        ></path>
+    </svg>
+</div>
+<pre>{{ secret | json }}</pre>
+<form #secretForm="ngForm" (submit)="create()" autocomplete="off">
+    <div class="mb-3">
+        <label for="nameInput" class="form-label">Put your secret here</label>
+        <input
+            required
+            min="1"
+            max="60"
+            pattern="[\x00-\x7F]+"
+            *ngIf="secret.Name"
+            type="password"
+            name="secret"
+            [(ngModel)]="secret.Secret"
+            class="form-control"
+            [disabled]="lock"
+        />
+    </div>
+    <div class="mb-3">
+        <label for="nameInput" class="form-label">Give it a name</label>
+        <input
+            required
+            min="1"
+            max="255"
+            autocomplete=""
+            type="text"
+            name="name"
+            [(ngModel)]="secret.Name"
+            id="nameInput"
+            class="form-control"
+            [disabled]="lock"
+        />
+    </div>
+    <div class="mb-3" *ngIf="secret.Secret">
+        <label for="keepersNumInput" class="form-label">Number of keepers</label>
+        <input
+            required
+            min="2"
+            max="255"
+            type="number"
+            name="keepersNum"
+            [(ngModel)]="secret.KeepersNum"
+            class="form-control"
+            id="keepersNumInput"
+            [disabled]="lock"
+        />
+    </div>
+    <div class="mb-3" *ngIf="secret.Secret">
+        <label for="keepersRequiredInput" class="form-label">The number of keepers required to unseal a secret</label>
+        <input
+            required
+            min="2"
+            max="255"
+            type="number"
+            name="keepersRequired"
+            [(ngModel)]="secret.KeepersRequired"
+            class="form-control"
+            id="keepersRequiredInput"
+            [disabled]="lock"
+        />
+    </div>
+    <button [disabled]="!secretForm.valid || lock" type="submit" class="btn btn-lg btn-primary btn-block">
+        Seal the secret
+    </button>
+    <input autocomplete="off" name="hidden" type="text" style="display: none" />
+</form>
+<ng-container *ngIf="shares">
+    <hr />
+
+    <div class="row">
+        <div class="col-12 mb-3">
+            <h2>Now distribute shares between keepers:</h2>
+        </div>
+
+        <div class="col-sm-6 mb-3" *ngFor="let share of shares; let i = index">
+            <div class="card" [class.text-muted]="share.copied">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Share #{{ i }} <span *ngIf="share.copied" class="badge bg-success">copied</span>
+                    </h5>
+                    <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+                    <p class="card-text">{{ share.hash }}</p>
+                    <a (click)="copy(i)" class="card-link">Copy</a>
+                    <a (click)="copyMarkdown(i)" class="card-link">Copy as markdown</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

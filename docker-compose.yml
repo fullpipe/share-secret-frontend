@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  api:
+    image: fullpipe/jmock
+    command: "/mocks/*.json --port 9090 --watch"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./mocks:/mocks
