@@ -18,4 +18,10 @@ main {
     height: 60px;
     line-height: 60px;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+    .github {
+        a {
+            font-size: smaller;
+        }
+    }
 }

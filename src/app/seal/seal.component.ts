@@ -67,7 +67,7 @@ To start unsealing visit \`/unseal\`.`;
 
     cleanup() {
         this.secret = {
-            Name: 'qwe',
+            Name: '',
             Secret: '',
             KeepersNum: 5,
             KeepersRequired: 3,
