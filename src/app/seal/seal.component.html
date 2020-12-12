@@ -79,7 +79,6 @@
 </form>
 <ng-container *ngIf="shares">
     <hr />
-
     <div class="row">
         <div class="col-12 mb-3">
             <h2>Now distribute shares between keepers:</h2>
@@ -97,6 +96,10 @@
                     <a (click)="copyMarkdown(i)" class="card-link">Copy as markdown</a>
                 </div>
             </div>
+        </div>
+
+        <div class="col-12 mt-3 mb-3">
+            <button type="submit" (click)="cleanup()" class="btn btn-lg btn-warning btn-block">Cleanup</button>
         </div>
     </div>
 </ng-container>

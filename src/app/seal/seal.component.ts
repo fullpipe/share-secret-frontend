@@ -10,17 +10,13 @@ import { copy } from '../copy-to-clipboard';
     styleUrls: ['./seal.component.scss'],
 })
 export class SealComponent implements OnInit {
-    secret: NewSecret = {
-        Name: 'qwe',
-        Secret: '',
-        KeepersNum: 5,
-        KeepersRequired: 3,
-    };
-
+    secret: NewSecret | undefined;
     shares: Share[] | undefined;
-
     lock = false;
-    constructor(private rpc: RpcService) {}
+
+    constructor(private rpc: RpcService) {
+        this.cleanup();
+    }
 
     ngOnInit(): void {}
 
@@ -49,7 +45,7 @@ export class SealComponent implements OnInit {
     }
 
     copyMarkdown(i: number) {
-        if (!this.shares) {
+        if (!this.shares || !this.secret) {
             return;
         }
 
@@ -67,5 +63,17 @@ Here is your share:
 To start unsealing visit \`/unseal\`.`;
 
         copy(message);
+    }
+
+    cleanup() {
+        this.secret = {
+            Name: 'qwe',
+            Secret: '',
+            KeepersNum: 5,
+            KeepersRequired: 3,
+        };
+
+        this.shares = undefined;
+        this.lock = false;
     }
 }
