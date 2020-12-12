@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RpcClient } from 'js-json-rpc-client';
 import { FetchTransport } from 'js-json-rpc-client';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +12,7 @@ export class RpcService {
     constructor() {
         this.client = new RpcClient(
             new FetchTransport({
-                url: 'http://localhost:8080',
+                url: environment.api,
                 retryConfig: {
                     maxRetryAttempts: 1,
                     scalingDuration: 500,
