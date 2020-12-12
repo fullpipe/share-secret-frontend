@@ -1,1 +1,91 @@
-<p>unseal works!</p>
+<div class="row">
+    <div class="col-12">
+        <div class="display-1 text-center mb-3">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                fill="currentColor"
+                class="bi bi-unlock"
+                viewBox="0 0 16 16"
+            >
+                <path
+                    fill-rule="evenodd"
+                    d="M9.655 8H2.333c-.264 0-.398.068-.471.121a.73.73 0 0 0-.224.296 1.626 1.626 0 0 0-.138.59V14c0 .342.076.531.14.635.064.106.151.18.256.237a1.122 1.122 0 0 0 .436.127l.013.001h7.322c.264 0 .398-.068.471-.121a.73.73 0 0 0 .224-.296 1.627 1.627 0 0 0 .138-.59V9c0-.342-.076-.531-.14-.635a.658.658 0 0 0-.255-.237A1.122 1.122 0 0 0 9.655 8zm.012-1H2.333C.5 7 .5 9 .5 9v5c0 2 1.833 2 1.833 2h7.334c1.833 0 1.833-2 1.833-2V9c0-2-1.833-2-1.833-2zM8.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"
+                />
+            </svg>
+        </div>
+    </div>
+</div>
+<div class="row mt-3" *ngIf="!id">
+    <div class="col-12">
+        <p>
+            After starting an unseal session, you and other keepers will have <strong>10 minutes</strong> to enter
+            shares.
+        </p>
+    </div>
+
+    <div class="col-12 mb-3">
+        <button [disabled]="lock" type="submit" (click)="start()" class="btn btn-lg btn-info btn-block">
+            Start unseal
+        </button>
+    </div>
+</div>
+
+<div class="row mt-3" *ngIf="id && !secret">
+    <div class="col-12 mb-3">
+        <h5>Send this link to other keepers</h5>
+        <div class="input-group is-invalid">
+            <input type="text" [value]="link" class="form-control" readonly />
+            <div class="input-group-append">
+                <button class="btn btn-outline-info" type="button" (click)="copyLink()">Copy</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <form #unsealForm="ngForm" (submit)="unseal()" autocomplete="off">
+            <div class="mb-3">
+                <span class="badge badge-info mr-1" *ngIf="secondsLeft">{{ secondsLeft }}</span>
+
+                <label *ngIf="!waitingForOthers" for="nameInput" class="form-label">Enter you share here</label>
+                <label *ngIf="waitingForOthers" for="nameInput" class="form-label"
+                    >Waiting for other keepers to enter they shares</label
+                >
+
+                <input
+                    required
+                    min="1"
+                    max="255"
+                    type="password"
+                    name="share"
+                    [(ngModel)]="share"
+                    class="form-control"
+                    [disabled]="lock"
+                />
+            </div>
+            <button [disabled]="!unsealForm.valid || lock" type="submit" class="btn btn-lg btn-primary btn-block">
+                Unseal the secret
+            </button>
+            <input autocomplete="off" name="hidden" type="text" style="display: none" />
+        </form>
+    </div>
+</div>
+
+<ng-container *ngIf="secret">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <h2>The secret is</h2>
+
+            <div class="input-group is-invalid">
+                <input type="text" [value]="secret" class="form-control form-control-lg" readonly />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-info" type="button" (click)="copySecret()">Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3 mb-3">
+            <button type="submit" [routerLink]="['/']" class="btn btn-lg btn-warning btn-block">Close</button>
+        </div>
+    </div>
+</ng-container>

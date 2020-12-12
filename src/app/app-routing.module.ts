@@ -15,6 +15,10 @@ const routes: Routes = [
         component: SealComponent,
     },
     {
+        path: 'unseal/:id',
+        component: UnsealComponent,
+    },
+    {
         path: 'unseal',
         component: UnsealComponent,
     },
