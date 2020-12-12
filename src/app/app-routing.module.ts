@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
 import { SealComponent } from './seal/seal.component';
+import { UnsealComponent } from './unseal/unseal.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 const routes: Routes = [
@@ -12,6 +13,10 @@ const routes: Routes = [
     {
         path: 'seal',
         component: SealComponent,
+    },
+    {
+        path: 'unseal',
+        component: UnsealComponent,
     },
     {
         path: 'how-it-works',

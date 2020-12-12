@@ -1,4 +1,4 @@
-<div class="display-1 text-center">
+<div class="display-1 text-center mb-3">
     <svg
         width="1em"
         height="1em"
@@ -13,7 +13,6 @@
         ></path>
     </svg>
 </div>
-<pre>{{ secret | json }}</pre>
 <form #secretForm="ngForm" (submit)="create()" autocomplete="off">
     <div class="mb-3">
         <label for="nameInput" class="form-label">Put your secret here</label>
