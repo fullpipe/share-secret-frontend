@@ -45,6 +45,7 @@ export class SealComponent implements OnInit {
         }
 
         share.copied = true;
+        copy(share.hash);
     }
 
     copyMarkdown(i: number) {
