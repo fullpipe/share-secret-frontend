@@ -1,6 +1,6 @@
 # ShareSecretFrontend
 
-Frontend part for [share-secret.fullpipe.dev](https://share-secret.fullpipe.dev/).
+Frontend part for [share-secret.fullpipe.dev](https://share-secret.fullpipe.dev/)
 
 ## Development
 
