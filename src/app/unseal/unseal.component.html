@@ -113,7 +113,12 @@
     <div class="row" *ngSwitchDefault>
         <div class="col-12">
             <p>Oops! Something goes wrong.</p>
-            <div class="alert alert-warning" role="alert">{{ unsealStatus }}</div>
+            <div
+                class="alert alert-warning"
+                role="alert"
+                *ngIf="unsealStatus"
+                [innerHtml]="unsealStatus | translate"
+            ></div>
             <p>May be try to <a [routerLink]="['/']">start new unseal</a> session</p>
         </div>
     </div>

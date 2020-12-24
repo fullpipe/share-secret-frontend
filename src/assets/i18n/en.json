@@ -1,0 +1,7 @@
+{
+    "no_unseal": "Unseal session does not exist",
+    "need_more_shares": "Unable to restore secret. Try to add more shared keys OR restart the unseal",
+    "restoration_failed": "Secret restoration failed. Probably someone entered an <strong>invalid share</strong>",
+    "secret_is_to_long": "Secret is to long",
+    "to_many_unseals": "Too many unseals"
+}
