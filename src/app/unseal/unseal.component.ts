@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, Subscription, throwError, timer } from 'rxjs';
-import { catchError, delay, filter, retryWhen, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { ResponseError } from 'js-json-rpc-client';
+import { EMPTY, NEVER, of, Subject, Subscription, throwError, timer } from 'rxjs';
+import { catchError, delay, filter, mergeMap, retryWhen, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { copy } from '../copy-to-clipboard';
 import { RpcService } from '../service/rpc.service';
 
@@ -17,7 +18,7 @@ export class UnsealComponent implements OnDestroy {
     secret: string | undefined;
 
     lock = false;
-    waitingForOthers = false;
+    unsealStatus: string | undefined;
 
     secondsLeft: number | undefined;
     timer = new Subject();
@@ -25,6 +26,7 @@ export class UnsealComponent implements OnDestroy {
     subscription = new Subscription();
 
     constructor(private location: Location, private activeRoute: ActivatedRoute, private rpc: RpcService) {
+        EMPTY.subscribe((_) => console.log('EMPTY'));
         this.activeRoute.params.pipe(filter((p) => p.id)).subscribe(({ id }) => {
             this.id = id;
         });
@@ -46,17 +48,24 @@ export class UnsealComponent implements OnDestroy {
                     filter((_) => !!this.share),
                     shareReplay(),
                     switchMap((_) => this.rpc.call('Secret.Unseal', { Share: this.share })),
-                    catchError((e) => {
-                        this.waitingForOthers = true;
+                    catchError((e: ResponseError) => {
+                        this.unsealStatus = e.message;
 
                         return throwError(e);
                     }),
-                    retryWhen((errors) =>
-                        errors.pipe(
-                            // tap((val) => console.log('error', val)),
+                    retryWhen((errors) => {
+                        return errors.pipe(
+                            mergeMap((e) => {
+                                if (e.message === 'need_more_shares') {
+                                    return of(e);
+                                }
+
+                                console.log(e);
+                                return NEVER;
+                            }),
                             delay(2000),
-                        ),
-                    ),
+                        );
+                    }),
                     filter((secret) => !!secret),
                 )
                 .subscribe((secret: string) => {
@@ -78,6 +87,26 @@ export class UnsealComponent implements OnDestroy {
 
     get link() {
         return location.href;
+    }
+
+    get state() {
+        if (!this.id) {
+            return 'start';
+        }
+
+        if (this.id && !this.secret && !this.unsealStatus) {
+            return 'enter_share';
+        }
+
+        if (this.id && !this.secret && this.unsealStatus === 'need_more_shares') {
+            return 'need_more_shares';
+        }
+
+        if (this.secret) {
+            return 'secret';
+        }
+
+        return 'oops';
     }
 
     copyLink() {

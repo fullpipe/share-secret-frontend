@@ -17,66 +17,87 @@
         </div>
     </div>
 </div>
-<div class="row mt-3" *ngIf="!id">
-    <div class="col-12">
-        <p>
-            After starting an unseal session, you and other keepers will have <strong>10 minutes</strong> to enter
-            shares.
-        </p>
-    </div>
 
-    <div class="col-12 mb-3">
-        <button [disabled]="lock" type="submit" (click)="start()" class="btn btn-lg btn-info btn-block">
-            Start unseal
-        </button>
-    </div>
-</div>
+<ng-container [ngSwitch]="state">
+    <div class="row mt-3" *ngSwitchCase="'start'">
+        <div class="col-12">
+            <p>
+                After starting an unseal session, you and other keepers will have <strong>10 minutes</strong> to enter
+                shares.
+            </p>
+        </div>
 
-<div class="row mt-3" *ngIf="id && !secret">
-    <div class="col-12 mb-3">
-        <h5>Send this link to other keepers</h5>
-        <div class="input-group is-invalid">
-            <input type="text" [value]="link" class="form-control" readonly />
-            <div class="input-group-append">
-                <button class="btn btn-outline-info" type="button" (click)="copyLink()">Copy</button>
-            </div>
+        <div class="col-12 mb-3">
+            <button [disabled]="lock" type="submit" (click)="start()" class="btn btn-lg btn-info btn-block">
+                Start unseal
+            </button>
         </div>
     </div>
-    <div class="col-12">
-        <form #unsealForm="ngForm" (submit)="unseal()" autocomplete="off">
-            <div class="mb-3">
-                <span class="badge badge-info mr-1" *ngIf="secondsLeft">{{ secondsLeft }}</span>
 
-                <label *ngIf="!waitingForOthers" for="nameInput" class="form-label">Enter you share here</label>
-                <label *ngIf="waitingForOthers" for="nameInput" class="form-label"
-                    >Waiting for other keepers to enter they shares</label
-                >
-
-                <input
-                    required
-                    min="1"
-                    max="255"
-                    type="password"
-                    name="share"
-                    [(ngModel)]="share"
-                    class="form-control"
-                    [disabled]="lock"
-                />
+    <div class="row mt-3" *ngSwitchCase="'enter_share'">
+        <div class="col-12 mb-3">
+            <h5>Send this link to other keepers</h5>
+            <div class="input-group is-invalid">
+                <input type="text" [value]="link" class="form-control" readonly />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-info" type="button" (click)="copyLink()">Copy</button>
+                </div>
             </div>
-            <button [disabled]="!unsealForm.valid || lock" type="submit" class="btn btn-lg btn-primary btn-block">
-                Unseal the secret
-            </button>
-            <input autocomplete="off" name="hidden" type="text" style="display: none" />
-        </form>
-    </div>
-</div>
+        </div>
+        <div class="col-12">
+            <form
+                #unsealForm="ngForm"
+                (submit)="unseal()"
+                autocomplete="off"
+                *ngIf="!unsealStatus || unsealStatus == 'need_more_shares'"
+            >
+                <div class="mb-3">
+                    <span class="badge badge-info mr-1" *ngIf="secondsLeft">{{ secondsLeft }}</span>
 
-<ng-container *ngIf="secret">
-    <div class="row">
+                    <label for="nameInput" class="form-label">Enter you share here</label>
+
+                    <input
+                        required
+                        min="1"
+                        max="255"
+                        type="password"
+                        name="share"
+                        [(ngModel)]="share"
+                        class="form-control"
+                        [disabled]="lock"
+                    />
+                </div>
+                <button [disabled]="!unsealForm.valid || lock" type="submit" class="btn btn-lg btn-primary btn-block">
+                    Unseal the secret
+                </button>
+                <input autocomplete="off" name="hidden" type="text" style="display: none" />
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-3" *ngSwitchCase="'need_more_shares'">
+        <div class="col-12 mb-3">
+            <h5>Send this link to other keepers</h5>
+            <div class="input-group is-invalid">
+                <input type="text" [value]="link" class="form-control" readonly />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-info" type="button" (click)="copyLink()">Copy</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 mt-3 align-baseline">
+            <span class="spinner-border mr-2" role="status">
+                <span class="sr-only">Loading...</span>
+            </span>
+            <span>Waiting for other keepers enter their shares</span>
+        </div>
+    </div>
+
+    <div class="row" *ngSwitchCase="'secret'">
         <div class="col-12 mb-3">
             <h2>The secret is</h2>
 
-            <div class="input-group is-invalid">
+            <div class="input-group">
                 <input type="text" [value]="secret" class="form-control form-control-lg" readonly />
                 <div class="input-group-append">
                     <button class="btn btn-outline-info" type="button" (click)="copySecret()">Copy</button>
@@ -86,6 +107,14 @@
 
         <div class="col-12 mt-3 mb-3">
             <button type="submit" [routerLink]="['/']" class="btn btn-lg btn-warning btn-block">Close</button>
+        </div>
+    </div>
+
+    <div class="row" *ngSwitchDefault>
+        <div class="col-12">
+            <p>Oops! Something goes wrong.</p>
+            <div class="alert alert-warning" role="alert">{{ unsealStatus }}</div>
+            <p>May be try to <a [routerLink]="['/']">start new unseal</a> session</p>
         </div>
     </div>
 </ng-container>

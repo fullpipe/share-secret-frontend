@@ -1,9 +1,34 @@
 <div class="row">
-    <div class="col-12">
+    <div class="col-8">
         <h1>How it works?</h1>
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio mollitia minima, impedit commodi id, incidunt
-            ad alias delectus quae quos officia iure vero doloribus, recusandae provident similique vitae ut voluptates?
+            For example, you want to&nbsp;share your database root password with your DevOps department. Enter your
+            password on&nbsp;<a [routerLink]="['/seal']">/seal</a> page and split it&nbsp;into few shares. You could
+            control how many shares will be&nbsp;created and how many of&nbsp;them will be&nbsp;required to&nbsp;restore
+            the password.
         </p>
+
+        <p>
+            After the split, you send shares to&nbsp;people in&nbsp;your department. One share for one person. Then
+            remove the original database password from everywhere.
+        </p>
+
+        <p>
+            When it&nbsp;comes to&nbsp;making some &ldquo;root&rdquo; manipulations with your database, you start
+            a&nbsp;temporary <a [routerLink]="['/unseal']">/unseal</a> session. Enter your share and send the unseal
+            link to&nbsp;other people from the DevOps department. When the required number of&nbsp;keepers enter their
+            shares, the password will be&nbsp;unsealed. Everyone who enters a&nbsp;valid share will see an&nbsp;unsealed
+            database password. It&nbsp;is&nbsp;required to&nbsp;enter a&nbsp;valid share to&nbsp;see the password.
+            If&nbsp;someone enters <strong>an&nbsp;invalid or&nbsp;empty share</strong>, the unseal session will
+            be&nbsp;<strong>failed</strong> and you have to&nbsp;start over with a&nbsp;new unseal session.
+        </p>
+
+        <blockquote class="blockquote">
+            <p class="mb-0">
+                We&nbsp;do&nbsp;not keep any data on&nbsp;the server. Only during unseal session in&nbsp;memory
+                we&nbsp;keep entered shares which will be&nbsp;deleted after the unseal session is&nbsp;over
+                or&nbsp;failed.
+            </p>
+        </blockquote>
     </div>
 </div>

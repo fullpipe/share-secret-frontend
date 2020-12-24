@@ -13,7 +13,7 @@
         ></path>
     </svg>
 </div>
-<form #secretForm="ngForm" (submit)="create()" autocomplete="off">
+<form #secretForm="ngForm" (submit)="create()" autocomplete="off" *ngIf="secret">
     <div class="mb-3">
         <label for="nameInput" class="form-label">Put your secret here</label>
         <input

@@ -25,3 +25,9 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+no_unseal: Unseal does not exist
+need_more_shares: Unable to restore secret. Try to add more shared keys OR restart the unseal
+restoration_failed: Secret restoration failed
+secret_is_to_long: Secret is to long
+to_many_unseals: Too many unseals
