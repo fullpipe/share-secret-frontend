@@ -47,7 +47,7 @@ export class UnsealComponent implements OnDestroy {
                 .pipe(
                     filter((_) => !!this.share),
                     shareReplay(),
-                    switchMap((_) => this.rpc.call('Secret.Unseal', { Share: this.share })),
+                    switchMap((_) => this.rpc.call('Secret.Unseal', { Share: this.share, Pool: this.id })),
                     catchError((e: ResponseError) => {
                         this.unsealStatus = e.message;
 
