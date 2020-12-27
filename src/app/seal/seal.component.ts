@@ -60,7 +60,7 @@ export class SealComponent implements OnInit {
 To unseal the secret it is required to collect *${this.secret.KeepersRequired}* shares.
 Here is your share:
 \`${share.hash}\`
-To start unsealing visit \`/unseal\`.`;
+To start unsealing visit \`${location.origin}/unseal\`.`;
 
         copy(message);
     }
