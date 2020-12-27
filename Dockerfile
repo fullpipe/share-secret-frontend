@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build --prod
+RUN npm run build -- --prod
 
 # App image
 FROM fullpipe/ngserve:latest
