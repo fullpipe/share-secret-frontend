@@ -11,8 +11,6 @@ COPY . .
 RUN npm run build -- --prod
 
 # App image
-FROM fullpipe/ngserve:latest
+FROM trion/nginx-angular
 
-COPY --from=build /app/dist/share-secret-frontend/ /app2/
-
-WEB_ROOT=./app2
+COPY --from=build /app/dist/share-secret-frontend/ /usr/share/nginx/html/
