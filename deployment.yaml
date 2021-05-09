@@ -1,71 +1,73 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: share-secret-frontend
-  namespace: share-secret
+    name: share-secret-frontend
+    namespace: share-secret
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: share-secret-frontend
-  template:
-    metadata:
-      labels:
-        app: share-secret-frontend
-    spec:
-      containers:
-      - name: share-secret-frontend
-        image: fullpipe/share-secret-frontend:latest
-        imagePullPolicy: Always
-        resources:
-          limits:
-            cpu: "50m"
-            memory: "128Mi"
+    replicas: 1
+    selector:
+        matchLabels:
+            app: share-secret-frontend
+    template:
+        metadata:
+            labels:
+                app: share-secret-frontend
+        spec:
+            containers:
+                - name: share-secret-frontend
+                  image: fullpipe/share-secret-frontend:latest
+                  imagePullPolicy: Always
+                  resources:
+                      limits:
+                          cpu: '50m'
+                          memory: '128Mi'
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: share-secret-frontend
-  namespace: share-secret
+    name: share-secret-frontend
+    namespace: share-secret
 spec:
-  ports:
-  - name: http
-    targetPort: 8080
-    port: 8080
-  selector:
-    app: share-secret-frontend
+    ports:
+        - name: http
+          targetPort: 8080
+          port: 8080
+    selector:
+        app: share-secret-frontend
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
-    cert-manager.io/cluster-issuer: letsencrypt
-  name: share-secret-frontend
-  namespace: share-secret
+    name: share-secret-route
+    namespace: share-secret
 spec:
-  rules:
-  - host: share-secret.fullpipe.dev
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: share-secret-frontend
-          servicePort: 8080
-  tls:
-  - hosts:
-    - share-secret.fullpipe.dev
-    secretName: share-secret.fullpipe.dev-cert
+    entryPoints:
+        - websecure
+    routes:
+        - match: Host(`share-secret.fullpipe.dev`) && PathPrefix(`/`)
+          kind: Rule
+          services:
+              - name: share-secret-frontend
+                port: 8080
+        - match: Host(`share-secret.fullpipe.dev`) && PathPrefix(`/api`)
+          kind: Rule
+          services:
+              - name: share-secret-api
+                port: 8080
+    tls:
+        secretName: share-secret.fullpipe.dev-cert
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: share-secret.fullpipe.dev-cert
-  namespace: share-secret
+    name: share-secret.fullpipe.dev-cert
+    namespace: share-secret
 spec:
-  commonName: share-secret.fullpipe.dev
-  secretName: share-secret.fullpipe.dev-cert
-  issuerRef:
-    name: letsencrypt
+    commonName: share-secret.fullpipe.dev
+    secretName: share-secret.fullpipe.dev-cert
+    dnsNames:
+        - share-secret.fullpipe.dev
+    issuerRef:
+        name: letsencrypt-prod
+        kind: ClusterIssuer
