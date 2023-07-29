@@ -1,16 +1,18 @@
-# Build
 FROM node:lts-alpine AS build
 
-WORKDIR /app2
+WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 
 RUN npm run build -- --prod
 
-# App image
-FROM trion/nginx-angular
 
-COPY --from=build /app/dist/share-secret-frontend/ /usr/share/nginx/html/
+FROM caddy:alpine as release
+
+EXPOSE 8080
+COPY  Caddyfile /etc/caddy/Caddyfile
+
+COPY --from=build /app/dist/share-secret-frontend /app

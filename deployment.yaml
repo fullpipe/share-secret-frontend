@@ -35,39 +35,34 @@ spec:
           port: 8080
     selector:
         app: share-secret-frontend
+
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-    name: share-secret-route
+    name: share-secret
     namespace: share-secret
 spec:
-    entryPoints:
-        - websecure
-    routes:
-        - match: Host(`share-secret.fullpipe.dev`) && PathPrefix(`/`)
-          kind: Rule
-          services:
-              - name: share-secret-frontend
-                port: 8080
-        - match: Host(`share-secret.fullpipe.dev`) && PathPrefix(`/api`)
-          kind: Rule
-          services:
-              - name: share-secret-api
-                port: 8080
+    ingressClassName: 'traefik'
     tls:
-        secretName: share-secret.fullpipe.dev-cert
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-    name: share-secret.fullpipe.dev-cert
-    namespace: share-secret
-spec:
-    commonName: share-secret.fullpipe.dev
-    secretName: share-secret.fullpipe.dev-cert
-    dnsNames:
-        - share-secret.fullpipe.dev
-    issuerRef:
-        name: letsencrypt-prod
-        kind: ClusterIssuer
+        - hosts:
+              - share-secret.fullpipe.dev
+          secretName: share-secret.fullpipe.dev-tls
+    rules:
+        - host: share-secret.fullpipe.dev
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: share-secret-frontend
+                            port:
+                                name: http
+                  - path: /api
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: share-secret-api
+                            port:
+                                name: http
