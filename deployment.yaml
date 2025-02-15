@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: share-secret-frontend
-    namespace: share-secret
 spec:
     replicas: 1
     selector:
@@ -17,17 +16,12 @@ spec:
                 - name: share-secret-frontend
                   image: fullpipe/share-secret-frontend:latest
                   imagePullPolicy: Always
-                  resources:
-                      limits:
-                          cpu: '50m'
-                          memory: '128Mi'
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
     name: share-secret-frontend
-    namespace: share-secret
 spec:
     ports:
         - name: http
@@ -41,7 +35,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
     name: share-secret
-    namespace: share-secret
 spec:
     ingressClassName: 'traefik'
     tls:
